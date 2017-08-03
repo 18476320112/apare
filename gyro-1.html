@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gyro-1</title>
+</head>
+<body>
+<script src="lib/js/jquery.js"></script>
+<script>
+    if(window.DeviceOrientationEvent){
+        window.addEventListener('deviceorientation',function(event){
+            var a =  document.getElementById('alpha'),
+                b = document.getElementById('beta'),
+                g = document.getElementById('gamma'),
+                alpha = event.alpha,
+                beta = event.beta,
+                gamma = event.gamma;
+            a.innerHTML = Math.round(alpha);
+            b.innerHTML = Math.round(beta);
+            g.innerHTML = Math.round(gamma);
+            if(beta>90){
+                beta = 90;
+            }else if(beta<-90){
+                beta = -90;
+            }
+
+            if(gamma>90){
+                gamma = 90;
+            }else if(gamma<-90){
+                gamma = -90;
+            }
+
+
+            var centerX = ((0.5-gamma/180)*100).toFixed(2)+"%";
+            var centerY = ((0.5-beta/180)*100).toFixed(2)+"%";
+
+            $spotlight.attr("cx",centerX);
+            $spotlight.attr("cy",centerY);
+
+        },false)
+    } else {
+        document.querySelector('body').innerHTML = '你的浏览器不支持'
+    }
+</script>
+</body>
+</html>
