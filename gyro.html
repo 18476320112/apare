@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gyro</title>
+</head>
+<body>
+<script src="lib/js/jquery.js"></script>
+<script>
+    $('.svgs').load('svg/light1.svg',function(){         // load 加载svg图片
+        var $spotlight = $('.radialGradient-1');            // 获取 图片
+        if(window.DeviceOrientationEvent){
+            window.addEventListener('deviceorientation',function(event){
+                var alpha = event.alpha,
+                    beta = event.beta,  //x
+                    gamma = event.gamma;  //y
+
+                if(beta>90){
+                    beta = 90;
+                }else if(beta<-90){
+                    beta = -90;
+                }
+
+                if(gamma>90){
+                    gamma = 90;
+                }else if(gamma<-90){
+                    gamma = -90;
+                }
+
+                /*if(gamma > 0){
+                 var centerX = (90 - gamma) / (4 * 90);
+                 }else {
+                 var centerX = (90 - 3 * gamma) / (4 * 90);
+                 }
+                 if(beta > 0){
+                 var centerY = (90 - beta) / (4 * 90);
+                 }else {
+                 var centerY = 1 / 4 + ((1 / 4 - 4 / 5) * beta / 90);
+                 }*/
+                if(gamma > 0){
+                    var centerX = (120 - gamma) / (4 * 90);
+                }else {
+                    var centerX = (120 - 3 * gamma) / (4 * 90);
+                }
+                if(beta > 0){
+                    var centerY = (120 - beta) / (4 * 90);
+                }else {
+                    var centerY = 1 / 3 + (-3 / 3 * beta / 90);
+                }
+
+
+                $spotlight.eq(0).attr("cx",centerX);
+                $spotlight.eq(0).attr("cy",centerY);
+                $spotlight.eq(1).attr("cx",centerX);
+                $spotlight.eq(1).attr("cy",centerY);
+
+            },false)
+        } else {
+            document.querySelector('body').innerHTML = '你的浏览器不支持'
+        }
+    });
+</script>
+</body>
+</html>
