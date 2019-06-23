@@ -10,11 +10,6 @@
     overflow: hidden;
 }
 
-#marquee ul {
-    padding: 0;
-    margin: 0;
-}
-
 #marquee img {
     display: block;
 }
@@ -31,7 +26,7 @@
     clear: both;
 }
 
-#marquee .marquee-wrapper li,
+#marquee .marquee-wrapper .marquee-item,
 #marquee .marquee-wrapper img {
     width: 520px;
     height: 280px;
