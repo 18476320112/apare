@@ -1,13 +1,22 @@
-//autoMove() -> move() -> changeStyle() -> slider()
-//定时器到了  -> 改变index -> 改变索引样式 -> 滑动轮播
-
 /**
  * 轮播图jquery插件说明
  *
- * 要求将被渲染为轮播图的div的id名为marquee
- * 调用方式为$('#marquee').marquee(imgs);
- * 其中imgs是图片数组，每一个数组元素为图片的路径名
- * 样式需引入marquee.css, 默认图片大小为520*280px, 若图片大小不同请自行修改
+ * 固定结构
+ * <div id="marquee" class="anyName">
+        <div class="marquee-wrapper">
+            <div class="marquee-item"></div>
+            <div class="marquee-item"></div>
+            <div class="marquee-item"></div>
+        </div>
+    </div>
+ * 调用方式为$('#marquee').marquee() \ $('.anyName).marquee(options);
+ * 配置: options 必须是对象
+ * delay: 延迟时间 默认 700ms
+ * speed: 滑动速度 默认 1700ms
+ * autoplay: 是否自动播放 默认 true
+ * paginationer: 是否展示分页 默认 true
+ * navigation: 是否展示前进后退按钮 true
+ * 样式需引入marquee.css
  */
 (function($) {
     var Marquee = function(el, options) {
@@ -36,7 +45,7 @@
         // 初始化事件
         this.bindEvents();
         // 
-        // this.autoMove();
+        this.autoMove();
     };
     // 初始化事件
     Marquee.prototype.bindEvents = function() {
@@ -50,7 +59,7 @@
                 return false
             };
             _this.currentIndex = $(this).index() + 1;
-            _this.move();
+            _this.transiter();
         }).on('mouseenter', function() {
             $('.prev').show();
             $('.next').show();
@@ -63,15 +72,29 @@
                 return false
             };
             _this.currentIndex += 1;
-            _this.move();
+            _this.transiter();
         }).on('click', '.prev', function() { // 上一页
             // 防止重复点击
             if (_this.flag) {
                 return false
             };
             _this.currentIndex -= 1;
-            _this.move();
+            _this.transiter();
         })
+    };
+    // 
+    Marquee.prototype.transiter = function() {
+        var _this = this;
+        // 停止自动轮播
+        _this.options.autoplay = false
+        clearTimeout(_this.timer);
+        clearTimeout(_this.timeStop);
+        // 停止点击 3 s 后自动轮播
+        _this.timeStop = setTimeout(function() {
+            _this.options.autoplay = true;
+            _this.autoMove();
+        }, _this.options.speed + 3000);
+        _this.move();
     };
     // 执行动画
     Marquee.prototype.move = function() {
@@ -99,9 +122,13 @@
                 _this.currentIndex = _this.timeLen - 1;
             }
         });
+        _this.autoMove();
     };
     // 
     Marquee.prototype.autoMove = function() {
+        if (!this.options.autoplay) {
+            return false
+        }
         var _this = this;
         clearTimeout(this.timer);
         _this.timer = setTimeout(function() {
@@ -141,6 +168,9 @@
     //添加自定义jq插件
     $.fn.extend({
         marquee: function(options) {
+            if (options !== undefined && !$.isPlainObject(options)) {
+                throw '参数必须为对象';
+            }
             new Marquee($(this), options);
         }
     })
